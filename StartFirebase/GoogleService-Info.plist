@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>57225796888-6tugnutej407op5err7h2ecldrs246v9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.57225796888-6tugnutej407op5err7h2ecldrs246v9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBxW5tMSd_Y3EX5_3MizA9KZzB7bITO9fY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>57225796888</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>app.shinchan.shintaro.StartFirebase</string>
+	<key>PROJECT_ID</key>
+	<string>startfirebase-35cbd</string>
+	<key>STORAGE_BUCKET</key>
+	<string>startfirebase-35cbd.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:57225796888:ios:513072e2e938fe686bd26d</string>
+	<key>DATABASE_URL</key>
+	<string>https://startfirebase-35cbd.firebaseio.com</string>
+</dict>
+</plist>
