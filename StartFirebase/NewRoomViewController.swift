@@ -35,7 +35,7 @@ class NewRoomViewController: UIViewController, UITableViewDelegate, UITableViewD
     ]
     
     
-    //------LIFE CYCLE
+    //------LIFE CYCLE 
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.isNavigationBarHidden = false
     }
