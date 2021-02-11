@@ -9,18 +9,16 @@ import UIKit
 
 class TextFieldCellTableViewCell: UITableViewCell, UITextFieldDelegate {
     
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var textField: PrimaryTextField!
     weak var delegate: textFieldEndEdditingDelegate?
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
         textField.delegate = self
-        textField.backgroundColor = UIColor(named: "TextFieldColor")
-        textField.textColor = UIColor(named: "TextColor")
         textField.returnKeyType = .done
-        textField.font = .systemFont(ofSize: 16)
         self.selectionStyle = .none
+        self.backgroundColor = .darkGray
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -28,19 +26,20 @@ class TextFieldCellTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func setCell(placeholder: String, value: String) {
-        textField.placeholder = placeholder
+        textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)])
+
         if value != "" {
             textField.text = value
         }
     }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        delegate?.textShouldEnter(cell: self)
+        delegate?.textFieldShouldEnter(cell: self)
         return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        delegate?.textEntered(cell: self, text: textField.text ?? "")
+        delegate?.textFieldEntered(cell: self, text: textField.text ?? "")
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -51,6 +50,6 @@ class TextFieldCellTableViewCell: UITableViewCell, UITextFieldDelegate {
 }
 
 protocol textFieldEndEdditingDelegate: AnyObject {
-    func textShouldEnter(cell: TextFieldCellTableViewCell)
-    func textEntered(cell: TextFieldCellTableViewCell, text: String)
+    func textFieldShouldEnter(cell: TextFieldCellTableViewCell)
+    func textFieldEntered(cell: TextFieldCellTableViewCell, text: String)
 }

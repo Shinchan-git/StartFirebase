@@ -18,14 +18,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="emu-Rb-e6P">
-                        <rect key="frame" x="16" y="6" width="288" height="32"/>
+                        <rect key="frame" x="16" y="3" width="288" height="38"/>
                         <state key="normal" title="Button"/>
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="emu-Rb-e6P" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="6" id="CQu-bY-69k"/>
+                    <constraint firstItem="emu-Rb-e6P" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="3" id="CQu-bY-69k"/>
                     <constraint firstAttribute="trailing" secondItem="emu-Rb-e6P" secondAttribute="trailing" constant="16" id="D4P-K2-V9w"/>
-                    <constraint firstAttribute="bottom" secondItem="emu-Rb-e6P" secondAttribute="bottom" constant="6" id="Qbs-xv-uUm"/>
+                    <constraint firstAttribute="bottom" secondItem="emu-Rb-e6P" secondAttribute="bottom" constant="3" id="Qbs-xv-uUm"/>
                     <constraint firstItem="emu-Rb-e6P" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="XVk-24-LyZ"/>
                 </constraints>
             </tableViewCellContentView>

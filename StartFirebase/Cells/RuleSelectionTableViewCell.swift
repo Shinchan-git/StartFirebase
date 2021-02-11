@@ -9,28 +9,31 @@ import UIKit
 
 class RuleSelectionTableViewCell: UITableViewCell {
     
-    @IBOutlet var label: UILabel!
+    @IBOutlet var label: PrimaryLabel!
     @IBOutlet var highlightedLabel: UILabel!
-    @IBOutlet var checkMarkImageView: UIImageView!
+    @IBOutlet var selectedRadioImageView: UIImageView!
+    @IBOutlet var unselectedRadioImageView: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
         highlightedLabel.isHidden = true
-        checkMarkImageView.isHidden = true
+        selectedRadioImageView.isHidden = true
+        unselectedRadioImageView.isHidden = true
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 16)
-        label.textColor = UIColor(named: "TextColor")
         highlightedLabel.backgroundColor = UIColor(named: "LabelColorHighlighted")
         highlightedLabel.layer.cornerRadius = 3
         highlightedLabel.clipsToBounds = true
         if #available(iOS 13.0, *) {
-            checkMarkImageView.image = UIImage(systemName: "checkmark")
+            selectedRadioImageView.image = UIImage(systemName: "largecircle.fill.circle")
+            unselectedRadioImageView.image = UIImage(systemName: "circle")
         } else {
             // Fallback on earlier versions
         }
-        checkMarkImageView.contentMode = .scaleAspectFit
-        checkMarkImageView.tintColor = UIColor(named: "TextColorAccent")
+        selectedRadioImageView.contentMode = .scaleAspectFit
+        selectedRadioImageView.tintColor = UIColor(named: "TextColorAccent")
+        unselectedRadioImageView.contentMode = .scaleAspectFit
+        unselectedRadioImageView.tintColor = UIColor(named: "TextColorAccent")
         self.selectionStyle = .none
     }
     
@@ -39,17 +42,35 @@ class RuleSelectionTableViewCell: UITableViewCell {
     }
     
     func setCell(rule: Rules.RuleType, selectedRule: Rules.RuleType?) {
-        label.text = rule.rawValue
+        label.text = rule.displayedName
         
         if let vcSelectedRule = selectedRule {
             if vcSelectedRule == rule {
+                label.attributedText = ruleNameWithRuleDescription(rule: rule)
                 highlightedLabel.isHidden = false
-                checkMarkImageView.isHidden = false
+                selectedRadioImageView.isHidden = false
+                unselectedRadioImageView.isHidden = true
+                
             } else {
                 highlightedLabel.isHidden = true
-                checkMarkImageView.isHidden = true
+                selectedRadioImageView.isHidden = true
+                unselectedRadioImageView.isHidden = false
             }
+            
+        } else {
+            highlightedLabel.isHidden = true
+            selectedRadioImageView.isHidden = true
+            unselectedRadioImageView.isHidden = false
         }
+    }
+    
+    func ruleNameWithRuleDescription(rule: Rules.RuleType) -> NSMutableAttributedString {
+        let rawText = rule.displayedName + "\n" + rule.description
+        let loc = String(rule.displayedName + "\n").count
+        let len = rule.description.count
+        let attributedText = NSMutableAttributedString(string: rawText)
+        attributedText.addAttributes([.foregroundColor: UIColor(named: "TextColorHelper")!], range: NSMakeRange(loc, len))
+        return attributedText
     }
     
 }

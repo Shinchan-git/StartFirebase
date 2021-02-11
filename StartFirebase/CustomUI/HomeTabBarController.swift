@@ -13,6 +13,7 @@ class HomeTabBarController: UITabBarController {
         super.viewDidLoad()
         
         UITabBar.appearance().tintColor = UIColor(named: "TextColorAccent")
+        UITabBar.appearance().barTintColor = UIColor(named: "TabBarColor")
     }
     
     

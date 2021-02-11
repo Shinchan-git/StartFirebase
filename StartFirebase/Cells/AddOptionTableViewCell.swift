@@ -17,8 +17,6 @@ class AddOptionTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        button.setTitle("選択肢を追加", for: .normal)
-        button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         button.setTitleColor(UIColor(named: "TextColorAccent"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16)
         button.contentHorizontalAlignment = .left
@@ -29,9 +27,25 @@ class AddOptionTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
+    func setCell(isTextViewButton: Bool) {
+        if isTextViewButton {
+            button.setTitle("説明文を追加", for: .normal)
+
+            button.addTarget(self, action: #selector(addTextViewButtonTapped(_:)), for: .touchUpInside)
+        } else {
+            button.setTitle("選択肢を追加", for: .normal)
+
+            button.addTarget(self, action: #selector(addOptionButtonTapped(_:)), for: .touchUpInside)
+        }
+    }
+    
     
     //------ACTION
-    @objc func buttonTapped(_ sender: UIButton) {
+    @objc func addTextViewButtonTapped(_ sender: UIButton) {
+        delegate?.addTextView()
+    }
+    
+    @objc func addOptionButtonTapped(_ sender: UIButton) {
         delegate?.addOption()
     }
     
@@ -41,5 +55,6 @@ class AddOptionTableViewCell: UITableViewCell {
 }
 
 protocol AddOptionCellDelegate: AnyObject {
+    func addTextView()
     func addOption()
 }

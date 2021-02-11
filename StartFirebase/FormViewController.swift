@@ -14,7 +14,7 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     let db = Firestore.firestore()
     var enteredTitle: String = ""
-    var room: Room = Room(roomTitle: "", docId: "", options: [], rule: "")
+    var room: Room = Room(roomTitle: "", docId: "", explanation: "", options: [], rule: "", state: "")
     var personalRank: [Int] = []
     var isFormFilled: Bool = false
     var hasEdited: Bool = false
@@ -23,13 +23,14 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     //------LIFE CYCLE
-    override func viewWillAppear(_ animated: Bool) {
-        
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = false
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.presentationController?.delegate = self
         table.delegate = self
         table.dataSource = self
         table.register(UINib(nibName: "LabelCellTableViewCell", bundle: nil), forCellReuseIdentifier: "LabelCell")
@@ -37,7 +38,6 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
         table.register(UINib(nibName: "VoterOptionsTableViewCell", bundle: nil), forCellReuseIdentifier: "VoterOptionsCell")
         table.register(UINib(nibName: "SupplementTableViewCell", bundle: nil), forCellReuseIdentifier: "SupplementCell")
         table.register(UINib(nibName: "SendTableViewCell", bundle: nil), forCellReuseIdentifier: "SendCell")
-        navigationController?.presentationController?.delegate = self
         setupBackground()
         setupNav()
         setupTable()
@@ -45,12 +45,6 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
         for _ in 0 ..< room.options.count {
             personalRank.append(0)
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
     }
     
     
@@ -61,6 +55,10 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             self.dismiss(animated: true, completion: nil)
         }
+    }
+    
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return false
     }
     
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
@@ -94,16 +92,18 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
         guard let userId = Auth.auth().currentUser?.uid else { return }
         let userRef = db.collection("users").document(userId)
         userRef.getDocument { (document, error) in
-            var attendedRooms: [String] = [self.room.docId]
+            var attendedRooms: [String] = []
 
             if let document = document, document.exists {
                 //Known user
                 let userData = document.data()
                 if let rooms = userData?["attendedRooms"] as? [String] {
                     //Returning user
-                    attendedRooms.append(contentsOf: rooms)
+                    
+                    attendedRooms = rooms
+                    let newRoom = self.room.docId
+                    attendedRooms.insert(newRoom, at: 0)
                     self.updateUserAttendance(data: attendedRooms, for: userRef)
-                    //Post ボタンを 再送ボタンに変える
 
                 } else {
                     //New user
@@ -157,9 +157,53 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section != 1 || indexPath.row == 0 { return }
+        if room.explanation == "" {
+            if indexPath.section != 1 || indexPath.row == 0 { return }
+        } else {
+            if indexPath.section != 2 || indexPath.row == 0 { return }
+        }
         
+        if room.rule == Rules.RuleType.majorityRule.ruleName {
+            makeSingleSelection(indexPath: indexPath)
+        } else {
+            makeMultiSelection(indexPath: indexPath)
+        }
+        
+        table.reloadData()
+    }
+    
+    func makeSingleSelection(indexPath: IndexPath) {
         let row = indexPath.row - 1
+
+        if personalRank[row] == 0 {
+            let selectedOptionIndex = personalRank.firstIndex(of: 1)
+            if let index = selectedOptionIndex {
+                personalRank[index] = 0
+                personalRank[row] = 1
+            } else {
+                personalRank[row] = 1
+            }
+        } else {
+            personalRank[row] = 0
+        }
+        
+        let ranksWithValue = personalRank.filter{ $0 != 0 }
+        if ranksWithValue.count > 0 {
+            hasEdited = true
+        } else {
+            hasEdited = false
+        }
+        
+        if ranksWithValue.count == 1 {
+            isFormFilled = true
+        } else {
+            isFormFilled = false
+        }
+    }
+    
+    func makeMultiSelection(indexPath: IndexPath) {
+        let row = indexPath.row - 1
+        
         if personalRank[row] == 0 {
             let ranksWithValue = personalRank.filter{ $0 != 0 }
             personalRank[row] = ranksWithValue.count + 1
@@ -184,87 +228,159 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             isFormFilled = false
         }
-        
-        table.reloadData()
     }
     
     
     //------UI
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        if room.explanation == "" {
+            return 3
+        } else {
+            return 4
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 2
-        case 1:
-            return room.options.count + 1
-        case 2:
-            return 3
-        default:
-            return 0
+        if room.explanation == "" {
+            switch section {
+            case 0:
+                return 2
+            case 1:
+                return room.options.count + 1
+            case 2:
+                return 3
+            default:
+                return 0
+            }
+        } else {
+            switch section {
+            case 0:
+                return 2
+            case 1:
+                return 2
+            case 2:
+                return room.options.count + 1
+            case 3:
+                return 3
+            default:
+                return 0
+            }
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
-        let titleCell = table.dequeueReusableCell(withIdentifier: "VoterTitleCell") as! VoterTitleTableViewCell
-        let optionCell = table.dequeueReusableCell(withIdentifier: "VoterOptionsCell") as! VoterOptionsTableViewCell
-        let supplementCell = table.dequeueReusableCell(withIdentifier: "SupplementCell") as! SupplementTableViewCell
-        let postCell = table.dequeueReusableCell(withIdentifier: "SendCell") as! SendTableViewCell
-        let blankCell = UITableViewCell()
-        
-        switch indexPath.section {
-        case 0:
-            switch indexPath.row {
+        if room.explanation == "" {
+            switch indexPath.section {
             case 0:
-                labelCell.setCell(labelText: "タイトル")
-                return labelCell
+                return cellForTitleSection(indexPath: indexPath)
             case 1:
-                titleCell.setCell(text: room.roomTitle)
-                return titleCell
-            default:
-                return blankCell
-            }
-            
-        case 1:
-            switch indexPath.row {
-            case 0:
-                labelCell.setCell(labelText: "選択肢（支持する順にタップ）")
-                return labelCell
-            default:
-                optionCell.setCell(text: room.options[indexPath.row - 1])
-                optionCell.highlightCell(rank: personalRank[indexPath.row - 1])
-                return optionCell
-            }
-        
-        case 2:
-            switch indexPath.row {
-            case 0:
-                labelCell.setCell(labelText: "この投票は\(room.rule)で集計されます。")
-                return labelCell
-            case 1:
-                postCell.setCell(text: "送信", enableButton: isFormFilled)
-                postCell.delegate = self as SendCellDelegate
-                return postCell
+                return cellForVoterOptionsSection(indexPath: indexPath)
             case 2:
-                blankCell.selectionStyle = .none
-                return blankCell
+                return cellForPostCellSection(indexPath: indexPath)
             default:
-                return blankCell
+                return UITableViewCell()
             }
             
+        } else {
+            switch indexPath.section {
+            case 0:
+                return cellForTitleSection(indexPath: indexPath)
+            case 1:
+                return cellForExplanationSection(indexPath: indexPath)
+            case 2:
+                return cellForVoterOptionsSection(indexPath: indexPath)
+            case 3:
+                return cellForPostCellSection(indexPath: indexPath)
+            default:
+                return UITableViewCell()
+            }
+        }
+    }
+    
+    func cellForTitleSection(indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            labelCell.setCell(labelText: "タイトル")
+            return labelCell
+        case 1:
+            let titleCell = table.dequeueReusableCell(withIdentifier: "VoterTitleCell") as! VoterTitleTableViewCell
+            titleCell.setCell(text: room.roomTitle)
+            return titleCell
         default:
-            return blankCell
+            return UITableViewCell()
+        }
+    }
+    
+    func cellForExplanationSection(indexPath: IndexPath) ->  UITableViewCell {
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            labelCell.setCell(labelText: "説明")
+            return labelCell
+        case 1:
+            let titleCell = table.dequeueReusableCell(withIdentifier: "VoterTitleCell") as! VoterTitleTableViewCell
+            titleCell.setCell(text: room.explanation)
+            return titleCell
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    func cellForVoterOptionsSection(indexPath: IndexPath) -> UITableViewCell {
+        var isSingleSelection = false
+        if room.rule == Rules.RuleType.majorityRule.ruleName {
+            isSingleSelection = true
+        }
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            if room.rule == Rules.RuleType.majorityRule.ruleName {
+                labelCell.setCell(labelText: "選択肢")
+            } else {
+                labelCell.setCell(labelText: "選択肢（支持する順にタップして順位をつけます。）")
+            }
+            return labelCell
+        default:
+            let optionCell = table.dequeueReusableCell(withIdentifier: "VoterOptionsCell") as! VoterOptionsTableViewCell
+            optionCell.setCell(text: room.options[indexPath.row - 1])
+            optionCell.highlightCell(rank: personalRank[indexPath.row - 1], isSingleSelectionMode: isSingleSelection, isRadioButtonStyle: isSingleSelection)
+            return optionCell
+        }
+    }
+    
+    func cellForPostCellSection(indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            let ruleText = Rules.convertRuleNameToDisplayName(ruleName: room.rule)
+            labelCell.setCell(labelText: "この投票は\(ruleText)で集計されます。")
+            return labelCell
+        case 1:
+            let postCell = table.dequeueReusableCell(withIdentifier: "SendCell") as! SendTableViewCell
+            postCell.setCell(text: "送信", enableButton: isFormFilled)
+            postCell.delegate = self as SendCellDelegate
+            return postCell
+        case 2:
+            return UITableViewCell()
+        default:
+            return UITableViewCell()
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 2 && indexPath.section == 2 {
-            return 200
+        if room.explanation == "" {
+            if indexPath.row == 2 && indexPath.section == 2 {
+                return 200
+            } else {
+                return UITableView.automaticDimension
+            }
         } else {
-            return UITableView.automaticDimension
+            if indexPath.row == 2 && indexPath.section == 3 {
+                return 200
+            } else {
+                return UITableView.automaticDimension
+            }
         }
     }
     
@@ -291,10 +407,16 @@ class FormViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func cancelAlert() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "内容を破棄", style: .default) { _ in
+        alert.addAction(UIAlertAction(title: "内容を破棄", style: .destructive) { _ in
             self.dismiss(animated: true)
         })
         alert.addAction(UIAlertAction(title: "入力を続ける", style: .cancel, handler: nil))
+        
+        if UIDevice.current.userInterfaceIdiom == .pad{
+            alert.popoverPresentationController?.sourceView = self.view
+            alert.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 0, height: 0)
+        }
+        
         present(alert, animated: true)
     }
 

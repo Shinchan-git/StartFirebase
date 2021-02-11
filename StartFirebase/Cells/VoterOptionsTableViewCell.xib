@@ -23,14 +23,14 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cL-k5-IhY">
-                        <rect key="frame" x="16" y="12" width="242" height="33"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cL-k5-IhY" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
+                        <rect key="frame" x="16" y="12" width="234" height="33"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cEb-go-Evr">
-                        <rect key="frame" x="264" y="12" width="40" height="33"/>
+                        <rect key="frame" x="256" y="12" width="40" height="33"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="nYX-xw-6rW"/>
                         </constraints>
@@ -38,28 +38,74 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="square" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="cLN-nQ-zMp">
+                        <rect key="frame" x="279" y="17" width="25" height="22.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="WdG-aX-guA"/>
+                            <constraint firstAttribute="height" constant="25" id="dKg-cs-3vO"/>
+                        </constraints>
+                    </imageView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark.square.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="egC-dC-jsx">
+                        <rect key="frame" x="279" y="17" width="25" height="22.5"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="hqe-f1-HtV"/>
+                            <constraint firstAttribute="width" constant="25" id="tQd-lQ-8Kh"/>
+                        </constraints>
+                    </imageView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="oQB-j1-IZc">
+                        <rect key="frame" x="279" y="16.5" width="25" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="ECK-cq-IcX"/>
+                            <constraint firstAttribute="width" constant="25" id="Jau-hq-3Zo"/>
+                        </constraints>
+                    </imageView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="largecircle.fill.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="PY7-wn-rhM">
+                        <rect key="frame" x="279" y="16.5" width="25" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="2Ck-nN-ahG"/>
+                            <constraint firstAttribute="width" constant="25" id="rNR-sB-flX"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="6cL-k5-IhY" secondAttribute="bottom" constant="12" id="0TC-YU-OUs"/>
-                    <constraint firstAttribute="trailing" secondItem="cEb-go-Evr" secondAttribute="trailing" constant="16" id="7du-tU-ubx"/>
+                    <constraint firstAttribute="trailing" secondItem="cEb-go-Evr" secondAttribute="trailing" constant="24" id="7du-tU-ubx"/>
+                    <constraint firstAttribute="trailing" secondItem="egC-dC-jsx" secondAttribute="trailing" constant="16" id="7my-nb-dw6"/>
+                    <constraint firstAttribute="trailing" secondItem="PY7-wn-rhM" secondAttribute="trailing" constant="16" id="9FU-eJ-H8I"/>
+                    <constraint firstAttribute="trailing" secondItem="cLN-nQ-zMp" secondAttribute="trailing" constant="16" id="BJY-T3-jiB"/>
+                    <constraint firstAttribute="trailing" secondItem="oQB-j1-IZc" secondAttribute="trailing" constant="16" id="F4k-ea-tFC"/>
                     <constraint firstAttribute="bottom" secondItem="uAv-jK-azI" secondAttribute="bottom" constant="2" id="Gu0-Sf-hl4"/>
                     <constraint firstItem="uAv-jK-azI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="HHb-Pv-RaH"/>
                     <constraint firstItem="cEb-go-Evr" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="L99-jR-e0t"/>
                     <constraint firstItem="uAv-jK-azI" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="2" id="OWl-hs-Mk0"/>
+                    <constraint firstItem="PY7-wn-rhM" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="QP2-3Q-mXc"/>
                     <constraint firstItem="6cL-k5-IhY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="Rqw-iE-mWL"/>
                     <constraint firstAttribute="bottom" secondItem="cEb-go-Evr" secondAttribute="bottom" constant="12" id="WOg-7n-KNE"/>
+                    <constraint firstItem="oQB-j1-IZc" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ZtP-Ta-kPr"/>
                     <constraint firstAttribute="trailing" secondItem="uAv-jK-azI" secondAttribute="trailing" constant="12" id="atQ-YO-EKv"/>
+                    <constraint firstItem="egC-dC-jsx" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="boZ-6r-Bes"/>
                     <constraint firstItem="6cL-k5-IhY" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="d8g-AD-Vjo"/>
+                    <constraint firstItem="cLN-nQ-zMp" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="lpd-Fx-JMZ"/>
                     <constraint firstItem="cEb-go-Evr" firstAttribute="leading" secondItem="6cL-k5-IhY" secondAttribute="trailing" constant="6" id="p0d-1T-pfn"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="checkMarkImageView" destination="egC-dC-jsx" id="J1l-Mh-VBG"/>
                 <outlet property="highlightedLabel" destination="uAv-jK-azI" id="FOr-3T-nza"/>
                 <outlet property="label" destination="6cL-k5-IhY" id="rU9-uU-Pwp"/>
                 <outlet property="personalRankLabel" destination="cEb-go-Evr" id="LAl-VZ-PZg"/>
+                <outlet property="selectedRadioImageView" destination="PY7-wn-rhM" id="HCo-f1-xsW"/>
+                <outlet property="uncheckedImageView" destination="cLN-nQ-zMp" id="jjH-66-3FT"/>
+                <outlet property="unselectedRadioImageView" destination="oQB-j1-IZc" id="mbh-Pw-6lA"/>
             </connections>
             <point key="canvasLocation" x="144.92753623188406" y="122.20982142857142"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="checkmark.square.fill" catalog="system" width="128" height="114"/>
+        <image name="circle" catalog="system" width="128" height="121"/>
+        <image name="largecircle.fill.circle" catalog="system" width="128" height="121"/>
+        <image name="square" catalog="system" width="128" height="114"/>
+    </resources>
 </document>

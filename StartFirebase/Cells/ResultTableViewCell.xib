@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9AH-Zq-B4o">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9AH-Zq-B4o" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
                         <rect key="frame" x="16" y="6" width="40" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="xYi-PU-PtL"/>
@@ -26,13 +26,13 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8SG-b0-TL6">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8SG-b0-TL6" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
                         <rect key="frame" x="62" y="6" width="196" height="32"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sus-Pp-8hj">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sus-Pp-8hj" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
                         <rect key="frame" x="264" y="6" width="40" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="7Qa-eQ-VGT"/>
@@ -61,7 +61,7 @@
                 <outlet property="rankLabel" destination="9AH-Zq-B4o" id="DvA-DT-R3e"/>
                 <outlet property="scoreLabel" destination="Sus-Pp-8hj" id="vFI-SL-Ydd"/>
             </connections>
-            <point key="canvasLocation" x="132" y="106"/>
+            <point key="canvasLocation" x="131.8840579710145" y="105.80357142857143"/>
         </tableViewCell>
     </objects>
 </document>

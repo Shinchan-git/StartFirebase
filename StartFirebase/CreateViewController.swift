@@ -11,19 +11,18 @@ import Firebase
 class CreateViewController: UIViewController {
     
     @IBOutlet weak var createButton: PrimaryButton!
-    @IBOutlet weak var recentRoomButton: UIButton!
-    @IBOutlet var guidLabel: UILabel!
-    @IBOutlet var recentRoomGuidLabel: UILabel!
+    @IBOutlet weak var recentRoomButton: CardButton!
+    @IBOutlet var guidLabel: PrimaryLabel!
+    @IBOutlet var recentRoomGuidLabel: PrimaryLabel!
     
-    let db = Firestore.firestore()
     var createdRoomsId: [String] = []
     var recentlyCreatedRoomInfo: Room?
     var userType: UserType = .unknown
     
     
     //------LIFE CYCLE
-    override func viewWillAppear(_ animated: Bool) {
-        //NewRoomViewで作成した場合はreloadCreatedRoomLabel()
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     override func viewDidLoad() {
@@ -35,9 +34,10 @@ class CreateViewController: UIViewController {
         setupRecentRoomButton()
         setupGuidLabels()
         
+        self.createButton.isHidden = false
+        
         getCreatedRoomsName({ createdRoomsId in
             self.createdRoomsId = createdRoomsId
-            self.createButton.isHidden = false
             self.reloadCreatedRoomButton()
         })
     }
@@ -49,6 +49,7 @@ class CreateViewController: UIViewController {
     //------ACTION
     func getCreatedRoomsName(_ after: @escaping ([String]) -> ()) {
         guard let userId = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
         let userRef = db.collection("users").document(userId)
 
         userRef.getDocument { (document, error) in
@@ -88,6 +89,7 @@ class CreateViewController: UIViewController {
     }
     
     func getRecentlyCreatedRoomInfo(_ after: @escaping (Room?) -> ()) {
+        let db = Firestore.firestore()
         let roomsRef = db.collection("rooms")
         let room = createdRoomsId[0] //
         roomsRef.document(room).getDocument { (document, error) in
@@ -97,9 +99,11 @@ class CreateViewController: UIViewController {
                 if let data = document.data() {
                     let title = data["title"] as! String
                     let docId = document.documentID
+                    let explanation = data["explanation"] as! String
                     let options = data["options"] as! [String]
                     let rule = data["rule"] as! String
-                    roomInfo = Room(roomTitle: title, docId: docId, options: options, rule: rule)
+                    let state = data["state"] as! String
+                    roomInfo = Room(roomTitle: title, docId: docId, explanation: explanation, options: options, rule: rule, state: state)
                 }
             } else {
                 print("err: Room does not exist")
@@ -112,12 +116,39 @@ class CreateViewController: UIViewController {
         performSegue(withIdentifier: "ToNewRoomView", sender: nil)
     }
     
+    @objc func recentRoomButtonTapped(_ sender: UIButton) {
+        performSegue(withIdentifier: "toRoomSettingView", sender: nil)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ToNewRoomView" {
             let nav = segue.destination as! UINavigationController
             let view = nav.viewControllers[nav.viewControllers.count - 1] as! NewRoomViewController
             view.createdRoomsId = self.createdRoomsId
             view.userType = self.userType
+            
+            view.childRefleshRecentRoomCallBack = { (shouldReflesh) in
+                self.refleshRecentRoomCallBack(completed: shouldReflesh)
+            }
+        }
+        if segue.identifier == "toRoomSettingView" {
+            let nav = segue.destination as! UINavigationController
+            let view = nav.viewControllers[nav.viewControllers.count - 1] as! RoomSettingViewController
+            if let room = self.recentlyCreatedRoomInfo {
+                view.room = room
+            }
+            view.childChangedStateCallBack = { (shouldReflesh) in
+                self.refleshRecentRoomCallBack(completed: shouldReflesh)
+            }
+        }
+    }
+    
+    func refleshRecentRoomCallBack(completed: Bool) {
+        if completed {
+            getCreatedRoomsName({ createdRoomsId in
+                self.createdRoomsId = createdRoomsId
+                self.reloadCreatedRoomButton()
+            })
         }
     }
     
@@ -137,54 +168,16 @@ class CreateViewController: UIViewController {
     }
     
     func setupRecentRoomButton() {
-        recentRoomButton.setBackgroundColor(UIColor(named: "BackgroundColor1dp")!, for: .normal)
-        recentRoomButton.setBackgroundColor(UIColor(named: "CardColorHighlighted")!, for: .highlighted)
-        recentRoomButton.layer.borderWidth = 1
-        recentRoomButton.layer.borderColor = UIColor(named: "CardBorderColor")?.cgColor
-        recentRoomButton.setTitleColor(UIColor(named: "TextColor"), for: .normal)
-        recentRoomButton.clipsToBounds = true
-        recentRoomButton.layer.cornerRadius = 5
-        recentRoomButton.contentHorizontalAlignment = .left
-        recentRoomButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
+        recentRoomButton.addTarget(self, action: #selector(recentRoomButtonTapped(_:)), for: .touchUpInside)
         recentRoomButton.isHidden = true
     }
     
     func setupGuidLabels() {
         guidLabel.text = "新しい投票ルームを作成します。"
-        guidLabel.font = .systemFont(ofSize: 16)
-        guidLabel.textColor = UIColor(named: "TextColor")
         
         recentRoomGuidLabel.text = "最近作成したルーム"
-        recentRoomGuidLabel.font = .systemFont(ofSize: 16)
-        recentRoomGuidLabel.textColor = UIColor(named: "TextColor")
         recentRoomGuidLabel.isHidden = true
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        recentRoomButton.setBackgroundColor(UIColor(named: "BackgroundColor1dp")!, for: .normal)
-        recentRoomButton.setBackgroundColor(UIColor(named: "CardColorHighlighted")!, for: .highlighted)
-        recentRoomButton.layer.borderColor = UIColor(named: "CardBorderColor")?.cgColor
-    }
-
 }
 
-
-extension UIButton {
-    func setBackgroundColor(_ color: UIColor, for state: UIControl.State) {
-        let image = color.image
-        setBackgroundImage(image, for: state)
-    }
-}
-
-extension UIColor {
-    var image: UIImage? {
-        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-        UIGraphicsBeginImageContext(rect.size)
-        guard let context = UIGraphicsGetCurrentContext() else { return nil }
-        context.setFillColor(self.cgColor)
-        context.fill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image
-    }
-}

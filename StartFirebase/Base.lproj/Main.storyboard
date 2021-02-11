@@ -18,9 +18,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="6sF-7z-lre">
-                                <rect key="frame" x="0.0" y="364" width="375" height="84.333333333333314"/>
+                                <rect key="frame" x="0.0" y="324" width="375" height="84.333333333333314"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cqP-hW-w80">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cqP-hW-w80" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
                                         <rect key="frame" x="167.66666666666666" y="0.0" width="39.666666666666657" height="19.333333333333332"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <nil key="textColor"/>
@@ -36,13 +36,13 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3oQ-no-fcN">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3oQ-no-fcN" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
                                 <rect key="frame" x="15.000000000000004" y="627" width="35.333333333333343" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLm-og-Mgd">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLm-og-Mgd" customClass="CardButton" customModule="StartFirebase" customModuleProvider="target">
                                 <rect key="frame" x="15" y="654" width="345" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="bsJ-2r-CMD"/>
@@ -52,7 +52,7 @@
                         <viewLayoutGuide key="safeArea" id="lBc-OZ-Da8"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="6sF-7z-lre" firstAttribute="centerY" secondItem="u1U-ck-bqo" secondAttribute="centerY" id="DLZ-Z9-BXv"/>
+                            <constraint firstItem="6sF-7z-lre" firstAttribute="centerY" secondItem="u1U-ck-bqo" secondAttribute="centerY" constant="-40" id="DLZ-Z9-BXv"/>
                             <constraint firstItem="lBc-OZ-Da8" firstAttribute="bottom" secondItem="lLm-og-Mgd" secondAttribute="bottom" constant="15" id="MqC-B2-mgi"/>
                             <constraint firstItem="lLm-og-Mgd" firstAttribute="leading" secondItem="lBc-OZ-Da8" secondAttribute="leading" constant="15" id="SEV-wJ-BwM"/>
                             <constraint firstItem="lBc-OZ-Da8" firstAttribute="trailing" secondItem="lLm-og-Mgd" secondAttribute="trailing" constant="15" id="W5a-WA-Tmj"/>
@@ -69,6 +69,7 @@
                         <outlet property="recentRoomButton" destination="lLm-og-Mgd" id="5Dy-Dh-VSg"/>
                         <outlet property="recentRoomGuidLabel" destination="3oQ-no-fcN" id="ffM-ab-dh0"/>
                         <segue destination="bsf-lJ-qVN" kind="show" identifier="ToNewRoomView" id="UD7-Sb-saa"/>
+                        <segue destination="tvV-i6-Sre" kind="show" identifier="toRoomSettingView" id="v2k-Ta-2gm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7V1-7b-s3e" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -165,15 +166,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="o1e-7n-IKD">
-                                <rect key="frame" x="0.0" y="364" width="375" height="84.333333333333314"/>
+                                <rect key="frame" x="0.0" y="324" width="375" height="84.333333333333314"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q6n-qW-pH0">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q6n-qW-pH0" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
                                         <rect key="frame" x="167.66666666666666" y="0.0" width="39.666666666666657" height="19.333333333333332"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bqi-su-olM">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bqi-su-olM" customClass="PrimaryTextField" customModule="StartFirebase" customModuleProvider="target">
                                         <rect key="frame" x="32" y="49.333333333333314" width="311" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="35" id="CEA-mc-EhJ"/>
@@ -187,13 +188,13 @@
                                     <constraint firstAttribute="trailing" secondItem="bqi-su-olM" secondAttribute="trailing" constant="32" id="yOL-kM-lbB"/>
                                 </constraints>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3cy-c6-piu">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3cy-c6-piu" customClass="PrimaryLabel" customModule="StartFirebase" customModuleProvider="target">
                                 <rect key="frame" x="15.000000000000004" y="627" width="35.333333333333343" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bfq-X8-0Fo">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bfq-X8-0Fo" customClass="CardButton" customModule="StartFirebase" customModuleProvider="target">
                                 <rect key="frame" x="15" y="654" width="345" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="BGm-D0-11r"/>
@@ -204,12 +205,12 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="3cy-c6-piu" firstAttribute="leading" secondItem="QmJ-RR-2KD" secondAttribute="leading" constant="15" id="1kb-G1-d6G"/>
-                            <constraint firstItem="o1e-7n-IKD" firstAttribute="centerY" secondItem="yST-ds-zZw" secondAttribute="centerY" id="5bu-Yh-YP7"/>
                             <constraint firstItem="bfq-X8-0Fo" firstAttribute="top" secondItem="3cy-c6-piu" secondAttribute="bottom" constant="10" id="Jjs-Ef-uVc"/>
                             <constraint firstItem="o1e-7n-IKD" firstAttribute="leading" secondItem="QmJ-RR-2KD" secondAttribute="leading" id="Lj8-HT-VEd"/>
                             <constraint firstItem="QmJ-RR-2KD" firstAttribute="trailing" secondItem="o1e-7n-IKD" secondAttribute="trailing" id="NnT-0y-1QB"/>
                             <constraint firstItem="bfq-X8-0Fo" firstAttribute="leading" secondItem="QmJ-RR-2KD" secondAttribute="leading" constant="15" id="P5f-4a-Lfs"/>
                             <constraint firstItem="o1e-7n-IKD" firstAttribute="centerX" secondItem="yST-ds-zZw" secondAttribute="centerX" id="Z8N-oC-X5v"/>
+                            <constraint firstItem="o1e-7n-IKD" firstAttribute="centerY" secondItem="yST-ds-zZw" secondAttribute="centerY" constant="-40" id="aaS-59-mxu"/>
                             <constraint firstItem="QmJ-RR-2KD" firstAttribute="trailing" secondItem="bfq-X8-0Fo" secondAttribute="trailing" constant="15" id="cBz-jg-mk4"/>
                             <constraint firstItem="QmJ-RR-2KD" firstAttribute="bottom" secondItem="bfq-X8-0Fo" secondAttribute="bottom" constant="15" id="pe5-l6-7TI"/>
                         </constraints>
@@ -259,10 +260,41 @@
             </objects>
             <point key="canvasLocation" x="2833" y="618"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Room Setting View Controller-->
+        <scene sceneID="1GB-Rn-b3F">
+            <objects>
+                <viewController id="QRB-KF-IZE" customClass="RoomSettingViewController" customModule="StartFirebase" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3DE-3P-mlJ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Aqj-rX-1k8">
+                                <rect key="frame" x="0.0" y="88" width="375" height="641"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="dFb-VB-iYY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Aqj-rX-1k8" firstAttribute="top" secondItem="dFb-VB-iYY" secondAttribute="top" id="3FE-LT-cKs"/>
+                            <constraint firstItem="dFb-VB-iYY" firstAttribute="trailing" secondItem="Aqj-rX-1k8" secondAttribute="trailing" id="5FH-hb-WV1"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="Aqj-rX-1k8" secondAttribute="bottom" id="5rZ-qX-8Hc"/>
+                            <constraint firstItem="Aqj-rX-1k8" firstAttribute="leading" secondItem="dFb-VB-iYY" secondAttribute="leading" id="wDS-TI-yDv"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="OTC-3E-vNy"/>
+                    <connections>
+                        <outlet property="table" destination="Aqj-rX-1k8" id="AY4-sf-8M5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qk3-et-o7e" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3775.1999999999998" y="-810.59113300492618"/>
+        </scene>
+        <!--Primary Navigation Controller-->
         <scene sceneID="o7k-er-3bp">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="bsf-lJ-qVN" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="bsf-lJ-qVN" customClass="PrimaryNavigationController" customModule="StartFirebase" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="S6B-IA-KtB"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="TBE-Vf-7eA">
@@ -278,10 +310,10 @@
             </objects>
             <point key="canvasLocation" x="2833" y="-109"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Primary Navigation Controller-->
         <scene sceneID="FpH-Fv-st3">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LdS-Sb-Yei" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LdS-Sb-Yei" customClass="PrimaryNavigationController" customModule="StartFirebase" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="EIS-pa-bwx"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="PPR-qg-NSv">
@@ -300,7 +332,7 @@
         <!--参加-->
         <scene sceneID="K1y-Z4-Uqn">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="GhH-LL-m9j" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="GhH-LL-m9j" customClass="PrimaryNavigationController" customModule="StartFirebase" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="参加" image="person.2" catalog="system" id="Z54-pf-U6s"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FS4-V5-3sc">
@@ -319,7 +351,7 @@
         <!--作成-->
         <scene sceneID="BJK-Dc-Rvl">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yOi-nd-SgX" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yOi-nd-SgX" customClass="PrimaryNavigationController" customModule="StartFirebase" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="作成" image="pencil.and.ellipsis.rectangle" catalog="system" id="7Ff-GI-BEa"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Px5-Ac-AxG">
@@ -334,6 +366,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7AG-80-nqf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1208.8" y="-108.62068965517241"/>
+        </scene>
+        <!--Primary Navigation Controller-->
+        <scene sceneID="98j-EZ-yyW">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="tvV-i6-Sre" customClass="PrimaryNavigationController" customModule="StartFirebase" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="oQf-Rc-C2U"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NKY-e4-nol">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="QRB-KF-IZE" kind="relationship" relationship="rootViewController" id="rDE-f3-485"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="t2L-Au-ZGf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2832.8000000000002" y="-810.59113300492618"/>
         </scene>
     </scenes>
     <resources>

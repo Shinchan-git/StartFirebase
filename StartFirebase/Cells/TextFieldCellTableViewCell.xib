@@ -17,16 +17,16 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5yh-Nt-aTU">
-                        <rect key="frame" x="16" y="6" width="288" height="32"/>
+                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5yh-Nt-aTU" customClass="PrimaryTextField" customModule="StartFirebase" customModuleProvider="target">
+                        <rect key="frame" x="12" y="6" width="296" height="32"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="5yh-Nt-aTU" secondAttribute="trailing" constant="16" id="35t-xQ-bHd"/>
+                    <constraint firstAttribute="trailing" secondItem="5yh-Nt-aTU" secondAttribute="trailing" constant="12" id="35t-xQ-bHd"/>
                     <constraint firstAttribute="bottom" secondItem="5yh-Nt-aTU" secondAttribute="bottom" constant="6" id="QjZ-YD-wIs"/>
-                    <constraint firstItem="5yh-Nt-aTU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="eag-Hh-eqN"/>
+                    <constraint firstItem="5yh-Nt-aTU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="eag-Hh-eqN"/>
                     <constraint firstItem="5yh-Nt-aTU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="6" id="oLn-Nl-b0c"/>
                 </constraints>
             </tableViewCellContentView>

@@ -10,19 +10,19 @@ import Firebase
 
 class AttendViewController: UIViewController, UITextFieldDelegate {
     
-    @IBOutlet weak var searchTextField: UITextField!
-    @IBOutlet weak var recentRoomButton: UIButton!
-    @IBOutlet var guidLabel: UILabel!
-    @IBOutlet var recentRoomGuidLabel: UILabel!
+    @IBOutlet weak var searchTextField: PrimaryTextField!
+    @IBOutlet weak var recentRoomButton: CardButton!
+    @IBOutlet var guidLabel: PrimaryLabel!
+    @IBOutlet var recentRoomGuidLabel: PrimaryLabel!
     
-    let db = Firestore.firestore()
     var enteredTitle: String = ""
     var attendedRoomsId: [String] = []
     var userType: UserType = .unknown
     var recentlyAttendedRoomInfo: Room?
     
     //------LIFE CYCLE
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     override func viewDidLoad() {
@@ -30,27 +30,26 @@ class AttendViewController: UIViewController, UITextFieldDelegate {
         
         searchTextField.delegate = self
         setupBackground()
-        setupTab()
+        setupNav()
         setupSearchTextField()
         setupRecentRoomButton()
         setupGuidLabels()
         setupGestureRecognizer()
+        hideKeyboardWhenTappedAround()
+        
+        self.searchTextField.isHidden = false
         
         getAttendedRoomsId({ roomsId in
             self.attendedRoomsId = roomsId
-            self.searchTextField.isHidden = false
             self.reloadAttendedRoomButton()
         })
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        
     }
     
     
     //------ACTION
     func getAttendedRoomsId(_ after: @escaping ([String]) -> ()) {
         guard let userId = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
         let userRef = db.collection("users").document(userId)
 
         userRef.getDocument { (document, error) in
@@ -89,6 +88,7 @@ class AttendViewController: UIViewController, UITextFieldDelegate {
     }
     
     func getRecentlyAttendedRoomInfo(_ after: @escaping (Room?) -> ()) {
+        let db = Firestore.firestore()
         let roomsRef = db.collection("rooms")
         let room = attendedRoomsId[0] //
         roomsRef.document(room).getDocument { (document, error) in
@@ -98,9 +98,11 @@ class AttendViewController: UIViewController, UITextFieldDelegate {
                 if let data = document.data() {
                     let title = data["title"] as! String
                     let docId = document.documentID
+                    let explanation = data["explanation"] as! String
                     let options = data["options"] as! [String]
                     let rule = data["rule"] as! String
-                    roomInfo = Room(roomTitle: title, docId: docId, options: options, rule: rule)
+                    let state = data["state"] as! String
+                    roomInfo = Room(roomTitle: title, docId: docId, explanation: explanation, options: options, rule: rule, state: state)
                 }
             } else {
                 print("err: Room does not exist")
@@ -125,7 +127,7 @@ class AttendViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @objc func recentRoomButtonTapped(_ sender: UIButton) {
+    @objc func recentRoomButtonTapped(_ sender: CardButton) {
         searchTextField.text = ""
         enteredTitle = ""
         performSegue(withIdentifier: "ToRoomOutlineView", sender: nil)
@@ -143,6 +145,19 @@ class AttendViewController: UIViewController, UITextFieldDelegate {
                 view.room = self.recentlyAttendedRoomInfo
                 view.hasVoted = true
             }
+            
+            view.childRefleshRecentRoomCallBack = { (shouldReflesh) in
+                self.refleshRecentRoomCallBack(completed: shouldReflesh)
+            }
+        }
+    }
+    
+    func refleshRecentRoomCallBack(completed: Bool) {
+        if completed {
+            getAttendedRoomsId({ roomsId in
+                self.attendedRoomsId = roomsId
+                self.reloadAttendedRoomButton()
+            })
         }
     }
     
@@ -152,56 +167,46 @@ class AttendViewController: UIViewController, UITextFieldDelegate {
         self.view.backgroundColor = UIColor(named: "BackgroundColor0dp")
     }
     
-    func setupTab() {
-//        self.tabBarItem = UITabBarItem(title: "投票", image: UIImage(named: ""), selectedImage: UIImage(named: "")) //
+    func setupNav() {
+        self.navigationItem.backButtonTitle = "戻る"
     }
     
     func setupSearchTextField() {
-        searchTextField.borderStyle = .roundedRect
-        searchTextField.backgroundColor = UIColor(named: "TextFieldColor")
-        searchTextField.textColor = UIColor(named: "TextColor")
-        searchTextField.placeholder = "ルーム名を入力"
+        searchTextField.attributedPlaceholder = NSAttributedString(string: "ルーム名を入力", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)])
         searchTextField.returnKeyType = .search
         searchTextField.isHidden = true
     }
     
     func setupGestureRecognizer() {
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(collapseTextField))
         let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(collapseTextField))
         swipeRecognizer.direction = .down
-        self.view.addGestureRecognizer(tapRecognizer)
         self.view.addGestureRecognizer(swipeRecognizer)
     }
 
     func setupRecentRoomButton() {
         recentRoomButton.addTarget(self, action: #selector(recentRoomButtonTapped(_:)), for: .touchUpInside)
-        recentRoomButton.setBackgroundColor(UIColor(named: "BackgroundColor1dp")!, for: .normal)
-        recentRoomButton.setBackgroundColor(UIColor(named: "CardColorHighlighted")!, for: .highlighted)
-        recentRoomButton.layer.borderWidth = 1
-        recentRoomButton.layer.borderColor = UIColor(named: "CardBorderColor")?.cgColor
-        recentRoomButton.setTitleColor(UIColor(named: "TextColor"), for: .normal)
-        recentRoomButton.clipsToBounds = true
-        recentRoomButton.layer.cornerRadius = 5
-        recentRoomButton.contentHorizontalAlignment = .left
-        recentRoomButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
         recentRoomButton.isHidden = true
     }
     
     func setupGuidLabels() {
         guidLabel.text = "ルーム名を入力して投票に参加"
-        guidLabel.font = .systemFont(ofSize: 16)
-        guidLabel.textColor = UIColor(named: "TextColor")
-        
         recentRoomGuidLabel.text = "最近参加したルーム"
-        recentRoomGuidLabel.font = .systemFont(ofSize: 16)
-        recentRoomGuidLabel.textColor = UIColor(named: "TextColor")
         recentRoomGuidLabel.isHidden = true
     }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        recentRoomButton.setBackgroundColor(UIColor(named: "BackgroundColor1dp")!, for: .normal)
-        recentRoomButton.setBackgroundColor(UIColor(named: "CardColorHighlighted")!, for: .highlighted)
-        recentRoomButton.layer.borderColor = UIColor(named: "CardBorderColor")?.cgColor
+
+
+}
+
+
+
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.hideKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
 
+    @objc func hideKeyboard() {
+        view.endEditing(true)
+    }
 }

@@ -18,11 +18,17 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
     var room: Room? = nil
     var hasVoted: Bool = false
     var votesListener: ListenerRegistration?
-    var results: [ResultRank] = []
+//    var results: [ResultRank] = []
+    var arrayOfResults: [[ResultRank]] = []
     var attendedRoomsId: [String] = []
+    var childRefleshRecentRoomCallBack: ((Bool) -> Void)?
     
     
     //------LIFE CYCLE
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         table.register(UINib(nibName: "LabelCellTableViewCell", bundle: nil), forCellReuseIdentifier: "LabelCell")
@@ -44,6 +50,13 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
                 self.room = roomInfo
                 
                 guard let room = self.room else {
+                    self.noResultsLabel.text = "該当なし:\n\"\(self.enteredTitle)\""
+                    self.noResultsLabel.isHidden = false
+                    return
+                }
+                
+                if room.state == "closed" {
+                    self.noResultsLabel.text = "\"\(self.enteredTitle)\"は非公開です。"
                     self.noResultsLabel.isHidden = false
                     return
                 }
@@ -65,6 +78,8 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        self.childRefleshRecentRoomCallBack?(true)
+        
         if let listener = votesListener {
             listener.remove()
         }
@@ -91,10 +106,11 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
                     let roomData = document.data()
                     let documentId = document.documentID
                     let title = roomData["title"] as! String
+                    let explanation = roomData["explanation"] as! String
                     let options = roomData["options"] as! [String]
                     let rule = roomData["rule"] as! String
-                    
-                    roomInfo = Room(roomTitle: title, docId: documentId, options: options, rule: rule)
+                    let state = roomData["state"] as! String
+                    roomInfo = Room(roomTitle: title, docId: documentId, explanation: explanation, options: options, rule: rule, state: state)
                 }
             }
             after(roomInfo)
@@ -145,11 +161,17 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
             let personalRanks: [[Int]] = documents.map { $0["personalRank"] as! [Int] }
             
             switch roomData.rule {
-            case Rules.RuleType.majorityRule.rawValue:
-                self.results = Rules.majorityRule(of: personalRanks, for: roomData)
+            case Rules.RuleType.majorityRule.ruleName:
+                let results: [ResultRank] = Rules.majorityRule(of: personalRanks, for: roomData)
+                self.arrayOfResults = [results]
                 
-            case Rules.RuleType.bordaRule.rawValue:
-                self.results = Rules.bordaRule(of: personalRanks, for: roomData)
+            case Rules.RuleType.bordaRule.ruleName:
+                let results: [ResultRank] = Rules.bordaRule(of: personalRanks, for: roomData)
+                self.arrayOfResults = [results]
+                
+            case Rules.RuleType.condorcetRule.ruleName:
+                let arrayOfResultsRaw = Rules.condorcetRule(of: personalRanks, for: roomData)
+                self.arrayOfResults = arrayOfResultsRaw.reduce([], { $0.contains($1) ? $0 : $0 + [$1] })
             default:
                 print("err: default rule")
             }
@@ -161,6 +183,10 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
+    @objc func backButtonTapped(_ sender: UIBarButtonItem) {
+        
+    }
+    
     
     //------UI
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -169,7 +195,7 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
                 return 1
                 
             } else {
-                return 3
+                return 2 + arrayOfResults.count
             }
         } else {
             return 0
@@ -185,12 +211,14 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
                 switch section {
                 case 0:
                     return 2
-                case 1:
-                    return results.count + 1
-                case 2:
+                case arrayOfResults.count + 1:
                     return 2
                 default:
-                    return 0
+                    if arrayOfResults.count > 0 {
+                        return arrayOfResults[0].count + 1
+                    } else {
+                        return 1
+                    }
                 }
             }
         } else {
@@ -199,67 +227,136 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
-        let titleCell = table.dequeueReusableCell(withIdentifier: "VoterTitleCell") as! VoterTitleTableViewCell
-        let goToVoteCell = table.dequeueReusableCell(withIdentifier: "SendCell") as! SendTableViewCell
-        let resultCell = table.dequeueReusableCell(withIdentifier: "ResultCell") as! ResultTableViewCell
-        let blankCell = UITableViewCell()
-        
-        guard let room = self.room else { return blankCell }
-        
         if !hasVoted {
-            switch indexPath.row {
-            case 0:
-                labelCell.setCell(labelText: "タイトル")
-                return labelCell
-            case 1:
-                titleCell.setCell(text: room.roomTitle)
-                return titleCell
-            case 2:
-                goToVoteCell.setCell(text: "投票", enableButton: true)
-                goToVoteCell.delegate = self as SendCellDelegate
-                return goToVoteCell
-            default:
-                return blankCell
-            }
+            return cellForGoToVoteSection(indexPath: indexPath)
             
         } else {
             switch indexPath.section {
             case 0:
-                switch indexPath.row {
-                case 0:
-                    labelCell.setCell(labelText: "タイトル")
-                    return labelCell
-                case 1:
-                    titleCell.setCell(text: room.roomTitle)
-                    return titleCell
-                default:
-                    return blankCell
-                }
-            case 1:
-                switch indexPath.row {
-                case 0:
-                    labelCell.setCell(labelText: "結果")
-                    return labelCell
-                default:
-                    let result = results[indexPath.row - 1]
-                    resultCell.setCell(rank: result.rank, name: result.name, score: result.score)
-                    return resultCell
-                }
-            case 2:
-                switch indexPath.row {
-                case 0:
-                    labelCell.setCell(labelText: "投票のルール")
-                    return labelCell
-                case 1:
-                    titleCell.setCell(text: "この投票は\(room.rule)で集計されました。")
-                    return titleCell
-                default:
-                    return blankCell
-                }
+                return cellForTitleSection(indexPath: indexPath)
+            case arrayOfResults.count + 1:
+                return cellForRuleExplanationSection(indexPath: indexPath)
             default:
-                return blankCell
+                if arrayOfResults.count == 1 {
+                    return cellForResultSection(indexPath: indexPath)
+                } else {
+                    return cellForMultipleResultSections(indexPath: indexPath)
+                }
             }
+        }
+    }
+    
+    func cellForTitleSection(indexPath: IndexPath) -> UITableViewCell {
+        guard let room = self.room else { return UITableViewCell() }
+
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            labelCell.setCell(labelText: "タイトル")
+            return labelCell
+        case 1:
+            let titleCell = table.dequeueReusableCell(withIdentifier: "VoterTitleCell") as! VoterTitleTableViewCell
+            titleCell.setCell(text: room.roomTitle)
+            return titleCell
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    func cellForResultSection(indexPath: IndexPath) -> UITableViewCell {
+        guard let room = self.room else { return UITableViewCell() }
+        let results = arrayOfResults[0]
+
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            labelCell.setCell(labelText: "結果")
+            return labelCell
+        default:
+            let result = results[indexPath.row - 1]
+            var scoreInString = ""
+            switch room.rule {
+            case Rules.RuleType.majorityRule.ruleName:
+                scoreInString = String(result.score) + "票"
+            case Rules.RuleType.bordaRule.ruleName:
+                scoreInString = String(result.score) + "点"
+            case Rules.RuleType.condorcetRule.ruleName:
+                scoreInString = "condorcet"
+            default:
+                print("err rule type")
+            }
+            let resultCell = table.dequeueReusableCell(withIdentifier: "ResultCell") as! ResultTableViewCell
+            resultCell.setCell(rank: result.rank, name: result.name, score: scoreInString)
+            return resultCell
+        }
+    }
+    
+    func cellForMultipleResultSections(indexPath: IndexPath) -> UITableViewCell {
+        guard let room = self.room else { return UITableViewCell() }
+        let results = arrayOfResults[indexPath.section - 1]
+
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            labelCell.setCell(labelText: "結果（\(indexPath.section)つめの可能性）")
+            return labelCell
+        default:
+            let result = results[indexPath.row - 1]
+            var scoreInString = ""
+            switch room.rule {
+            case Rules.RuleType.condorcetRule.ruleName:
+                scoreInString = "condorcet"
+            default:
+                print("err rule type")
+            }
+            let resultCell = table.dequeueReusableCell(withIdentifier: "ResultCell") as! ResultTableViewCell
+            resultCell.setCell(rank: result.rank, name: result.name, score: scoreInString)
+            return resultCell
+        }
+    }
+    
+    func cellForRuleExplanationSection(indexPath: IndexPath) -> UITableViewCell {
+        guard let room = self.room else { return UITableViewCell() }
+
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            labelCell.setCell(labelText: "投票のルール")
+            return labelCell
+        case 1:
+            let titleCell = table.dequeueReusableCell(withIdentifier: "VoterTitleCell") as! VoterTitleTableViewCell
+            let ruleText = Rules.convertRuleNameToDisplayName(ruleName: room.rule)
+            if arrayOfResults.count == 1 {
+                titleCell.setCell(text: "この投票は\(ruleText)で集計されました。")
+            } else {
+                let textWithNote = "この投票は\(ruleText)で集計されました。（全体の投票数が少ないと、結果が複数出ることがあります。）"
+                titleCell.setCell(text: textWithNote)
+            }
+            return titleCell
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    func cellForGoToVoteSection(indexPath: IndexPath) -> UITableViewCell {
+        guard let room = self.room else { return UITableViewCell() }
+        
+        switch indexPath.row {
+        case 0:
+            let labelCell = table.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCellTableViewCell
+            labelCell.setCell(labelText: "タイトル")
+            return labelCell
+        case 1:
+            let titleCell = table.dequeueReusableCell(withIdentifier: "VoterTitleCell") as! VoterTitleTableViewCell
+            titleCell.setCell(text: room.roomTitle)
+            return titleCell
+        case 2:
+            let goToVoteCell = table.dequeueReusableCell(withIdentifier: "SendCell") as! SendTableViewCell
+            goToVoteCell.setCell(text: "投票", enableButton: true)
+            goToVoteCell.delegate = self as SendCellDelegate
+            return goToVoteCell
+        default:
+            return UITableViewCell()
         }
     }
     
@@ -269,11 +366,11 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func setupNoResultsLabel() {
-        noResultsLabel.frame.size = CGSize(width: 200, height: 80)
+        noResultsLabel.frame.size = CGSize(width: self.view.frame.size.width - 40, height: 200)
         noResultsLabel.center = self.view.center
-        noResultsLabel.text = "該当なし"
+        noResultsLabel.numberOfLines = 0
         noResultsLabel.textAlignment = .center
-        noResultsLabel.textColor = UIColor(white: 0.4, alpha: 1.0)
+        noResultsLabel.textColor = UIColor(white: 0.45, alpha: 1.0)
         noResultsLabel.font = .systemFont(ofSize: 20)
         noResultsLabel.isHidden = true
         self.view.addSubview(noResultsLabel)
@@ -284,8 +381,7 @@ class RoomOutlineViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func setupNav() {
-        self.navigationItem.backButtonTitle = "戻る" //
-        self.navigationItem.title = "投票"
+        self.navigationItem.title = "ルーム"
     }
     
     func setupTable() {

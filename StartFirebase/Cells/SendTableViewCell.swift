@@ -18,20 +18,7 @@ class SendTableViewCell: UITableViewCell {
         super.awakeFromNib()
         
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-//        button.setBackgroundColor(UIColor(named: "ButtonColor")!, for: .normal)
-//        button.setBackgroundColor(UIColor(named: "ButtonColorHighlighted")!, for: .highlighted)
-//        button.setBackgroundColor(UIColor(named: "ButtonColorDisabled")!, for: .disabled)
-//        button.setTitleColor(UIColor(named: "TextOnButtonColor"), for: .normal)
-//        button.setTitleColor(UIColor(named: "TextOnButtonColorDisabled"), for: .disabled)
-//        button.layer.cornerRadius = 4
-//        button.clipsToBounds = true
         self.selectionStyle = .none
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        button.setBackgroundColor(UIColor(named: "ButtonColor")!, for: .normal)
-//        button.setBackgroundColor(UIColor(named: "ButtonColorHighlighted")!, for: .highlighted)
-//        button.setBackgroundColor(UIColor(named: "ButtonColorDisabled")!, for: .disabled)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

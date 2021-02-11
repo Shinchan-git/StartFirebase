@@ -9,14 +9,12 @@ import UIKit
 
 class VoterTitleTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var label: PrimaryLabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 16)
-        label.textColor = UIColor(named: "TextColor")
         self.selectionStyle = .none
     }
 

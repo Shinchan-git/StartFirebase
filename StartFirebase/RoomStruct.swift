@@ -11,9 +11,10 @@ struct Room {
     
     var roomTitle: String
     var docId: String
+    var explanation: String
     var options: [String]
     var rule: String
-    
+    var state: String
 }
 
 struct ResultRank: Equatable {

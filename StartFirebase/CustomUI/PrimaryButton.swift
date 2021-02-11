@@ -9,9 +9,21 @@ import UIKit
 
 class PrimaryButton: UIButton {
     
+    enum InteractionState {
+        case enabled
+        case disabled
+    }
+    
+    var interactionState: InteractionState {
+        if isEnabled {
+            return .enabled
+        } else {
+            return .disabled
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setup()
     }
     
@@ -21,8 +33,6 @@ class PrimaryButton: UIButton {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        print("awakeFromNib")
         setup()
     }
 
@@ -30,7 +40,6 @@ class PrimaryButton: UIButton {
         super.touchesBegan(touches, with: event)
         //buttonColorHighlighted: +15% #FFFFFF
         self.backgroundColor = UIColor(named: "ButtonColorHighlighted")
-        print("tachesBegan")
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -43,12 +52,11 @@ class PrimaryButton: UIButton {
         self.backgroundColor = UIColor(named: "ButtonColor")
     }
     
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        super.traitCollectionDidChange(previousTraitCollection)
-//        self.setBackgroundColor(UIColor(named: "ButtonColor")!, for: .normal)
-//        self.setBackgroundColor(UIColor(named: "ButtonColorHighlighted")!, for: .highlighted)
-//        self.setBackgroundColor(UIColor(named: "ButtonColorDisabled")!, for: .disabled)
-//    }
+    override var isEnabled: Bool {
+        didSet {
+            updateState()
+        }
+    }
     
     func setup() {
         self.backgroundColor = UIColor(named: "ButtonColor")
@@ -56,11 +64,15 @@ class PrimaryButton: UIButton {
         self.setTitleColor(UIColor(named: "TextOnButtonColorDisabled"), for: .disabled)
         self.layer.cornerRadius = 4
         self.clipsToBounds = true
-//        self.setBackgroundColor(UIColor(named: "ButtonColor")!, for: .normal)
-//        self.setBackgroundColor(UIColor(named: "ButtonColorHighlighted")!, for: .highlighted)
-//        self.setBackgroundColor(UIColor(named: "ButtonColorDisabled")!, for: .disabled)
-        print("setup")
     }
     
+    func updateState() {
+        switch interactionState {
+        case .enabled:
+            self.backgroundColor = UIColor(named: "ButtonColor")
+        case .disabled:
+            self.backgroundColor = UIColor(named: "ButtonColorDisabled")
+        }
+    }
     
 }
